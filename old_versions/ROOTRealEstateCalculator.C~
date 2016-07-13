@@ -1,0 +1,73 @@
+#include <TH1F.h>
+#include <TH2F.h>
+#include <TH2.h>
+#include <TMath.h>
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+TH2F *amtzn=NULL;
+double p,dp,fr,rr,tr,a,np;
+int n,x;
+float pt,mr,mmr;
+/* p=total property price
+   dp=down payment
+   fr=farming revenue per month
+   rr=renting revenue per month
+   tr=total revenue per month
+   pt=propery tax rate
+   mr=mortgage interest rate
+   mmr=monthly mortgage rate
+   a=amortization 
+   n=number of mortgage payments in months
+   np= net profit
+*/
+
+void ROOTRealEstateCalculator()
+{ 
+  /*cout << "Please enter the total property price: ";
+  cin >>p;
+  cout << "Please enter your downpayment, the more the better!: ";
+  cin >>dp;
+  cout << "How much farming revenue per month: " ;
+  cin >>fr;
+  cout <<" How much revenue from renting per month: ";
+  cin >>rr;
+  cout <<"Please enter the annual mortgage interest rate in decimal form: ";
+  cin >>mr;
+  mmr=mr/12;
+  cout <<"Please enter the property tax rate: ";
+  cin >>pt;
+  cout<<"How many months is the mortgage?: ";
+  cin >>n;
+  */
+   p=300000; dp=50000; fr=1000; rr=1000; mr=0.05; mmr=mr/12; pt=.068; n=360;
+  //Calculation of the interesting stuff
+  a=(p-dp)*mmr*pow(1+mmr,n)/(pow(1+mmr,n)-1);
+tr=fr+rr;
+  np=tr-a-(pt*p/12);
+
+  cout << "This is your amortization payment: " << a << endl;
+  cout << "This is your net profit: " <<np<<endl;
+
+  //Opening a file and writing to it
+  ofstream myfile;
+  amtzn=new TH2F("amtzn","amtzn",100,0,.01,100,0,5000);
+  myfile.open("Mortgagevalues.txt");
+  x=0;
+  mr=0;
+  mmr=0;
+  while (x< 80)
+    {
+      mr=x*.001;
+      mmr=mr/12;
+      a=(p-dp)*mmr*pow(1+mmr,n)/(pow(1+mmr,n)-1);
+      myfile << a << "\t";
+      myfile << mr<< "\t";
+      myfile << mmr <<endl;
+      x++;
+      amtzn->Fill(mmr,a);
+    }
+  myfile.close();
+      
+}

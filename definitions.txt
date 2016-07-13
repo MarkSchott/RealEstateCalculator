@@ -1,0 +1,10 @@
+principal
+amortization
+principal_remaining
+total revenue
+base cost
+calculated cost
+total cost
+net profit
+selling price
+

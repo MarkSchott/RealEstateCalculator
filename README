@@ -1,0 +1,15 @@
+In this folder there contains multiple scripts to calculate various values relating to a real estate investment. 
+
+ROOTRealEstateCalculator.C is one that prompts you for the necessary values and needs to be run on ROOT
+
+RealEstateCalculator_1_00.cpp is one that prompts and is the earliest version. 
+
+root -l
+.x ROOTRealEstateCalculator.C
+ROOTRealEstateCalculator()
+
+RealEstateCalculator_1_01.cpp is an early version that reads in values from input.txt and writes them to MortgageValues.txt. It shouldn't be used. 
+
+RealEstateCalculator_1_02.cpp just puts all the values into a class and uses pointers to access.
+
+RealEstateCalculator_1_03.cpp puts the class and functions into Values.h and runs everything from the source file. 
