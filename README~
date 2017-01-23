@@ -1,8 +1,0 @@
-In this folder there contains multiple scripts to calculate various values relating to a real estate investment. 
-
-ROOTRealEstateCalculator.C is one that prompts you for the necessary values and needs to be run on ROOT
-
-root -l
-.x ROOTRealEstateCalculator.C
-ROOTRealEstateCalculator()
-

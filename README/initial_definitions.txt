@@ -1,0 +1,11 @@
+initial_property_value
+down_payment
+monthly_maintenance
+farming_revenue
+rental_revenue
+improvements
+months_owned
+property_tax_rate
+annual_mortgage_rate
+target_growth_rate
+mortgage_length
