@@ -3,8 +3,10 @@ using namespace std;
 
 double input_values[11];
 
-int main()
-{ 
+int main(int argv, char ** argc)
+{
+  char * input_file ;
+  if (argv < 2) input_file = 
   Values *val_1=nullptr;
   
   val_1->assign(input_values);
