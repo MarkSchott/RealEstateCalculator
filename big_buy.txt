@@ -1,0 +1,11 @@
+init_property_val=13000000
+down_payment=2600000
+monthly_maint=10000
+farming_revenue=1000
+rental_revenue=0
+improvements=0
+months_owned=120
+property_tax_rate=.03
+annual_mortgage_rate=.0274
+target_growth_rate=.01
+mortgage_length=180

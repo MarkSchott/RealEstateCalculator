@@ -1,106 +1,106 @@
 #ifndef VALUES_CPP
 #define VALUES_CPP
-#include "../include/Values.hpp"
+#include "include/Values.h"
 using namespace std;
 
+/*
+  Reading in key=value pairs from the user provided (or default) input file and complaining if there is no match which is designated explicited in the class interface 
+*/
 
-Values::Values(double a,double b,double c,double d,double e,double f,int g,double h,double i,double j,int k)
-{
-  initial_property_value=a;
-  down_payment=b;
-  monthly_maintenance=c;
-  farming_revenue=d;
-  rental_revenue=e;
-  improvements=f;
-  months_owned=g;
-  property_tax_rate=h;
-  annual_mortgage_rate=i;
-  target_growth_rate=j;
-  mortgage_length=k;
-}
-                                                                                                                                                                                 
-  void Values::assign(double *a)                                                                                                                                                            
-{                                                                                                                                                                                  
+Values::Values(string input_file) { 
+                     
   ifstream infile;              
-  infile.open("input.txt");
-  int i=0;
-  double f;
-  
+  infile.open(input_file);
+  string keyval;
+  string key ;
+  string value ;
+  int delim_pos = 0 ;
+
+  /*Read in values that were provided in the file*/
   while (!(infile.eof()))
     {
-      infile >> f;
-      a[i]=f;
-      i++;
+      infile >> keyval ;
+      delim_pos = keyval.find('=', 0) ;
+      key = keyval.substr(0, delim_pos) ;
+      if ( params.find(key) == params.end() ) {
+	cerr << key << " is not a valid key\n " ;
+	continue ;
+      }
+      value = keyval.substr(delim_pos + 1, string::npos) ;
+      delim_pos = 0 ;
+      params[key] = stod(value) ;
     }
 
   infile.close();
-}                                                                                                                                                                                 
+
+  /*
+    OPTIONAL FUTURE SUPPORT:
+    Now read in the values that were provided manually on the command line which will overwrite the 
+    ones provided in the file
+  */
+}
 
 void Values::print_values()
 {
-  cout << initial_property_value <<endl;
-  cout << down_payment<<endl;
-  cout << monthly_maintenance<<endl;
-  cout << farming_revenue<<endl;
-  cout << rental_revenue<<endl;
-  cout << improvements<<endl;
-  cout << months_owned<<endl;
-  cout << property_tax_rate<<endl;
-  cout << annual_mortgage_rate<<endl;
-  cout << target_growth_rate<<endl;
-  cout << mortgage_length<<endl;
+  /* Iterate through the unordered_map and print each key and value */
+  for (auto& x: params) {
+    cout << x.first << ": " << x.second << endl ;
+  }
 }
 
 double Values::principal()
-{//a is initial property value, b is down payment                                                                                                                                  
-  return (initial_property_value - down_payment);
+{
+  return (params[IPV] - params[DP]);
 }
 
 double Values::principal_remaining()
-	      //a is principal, b is annual_mortgage_rate, c is months_owned, and d is amortization                                                                                              
+
 {
-  double z;
-  z = p * pow((1 + annual_mortgage_rate / 12), months_owned) - amtz * (pow(( 1 + annual_mortgage_rate / 12),months_owned) - 1)/(annual_mortgage_rate / 12);
-  return z;
+  double P_remaining;
+  P_remaining = \
+    params[IPV] * pow((1 + params[AMR] / 12), params[MO])- amortization() \
+    * (pow(( 1 + params[AMR] / 12), params[MO]) - 1)/(params[AMR] / 12);
+  return P_remaining;
 }
 
 double Values::total_revenue ()
-	      //a is months_owned, b is farming revenue, c is rental revenue, d is initial property value, e is target growth rate                                                               
 {
   double z;
-  z = months_owned * (farming_revenue + rental_revenue) + initial_property_value * pow((1 + target_growth_rate), months_owned / 12);
+  z = params[MO] * (params[FR] + params[RR]) + params[IPV] \
+    * pow((1 + params[TGR]), params[MO] / 12);
   return z;
 }
 
 double Values::amortization()
-	      //a is initial_property value, b is annual_mortgage rate, c is down payment, d is mortgage_length                                                                                  
 {
   double z;
-  z = (initial_property_value - down_payment) * annual_mortgage_rate / 12 * pow(1 + annual_mortgage_rate / 12, mortgage_length)/(pow(1 + annual_mortgage_rate / 12, mortgage_length) - 1);
+  z = (params[IPV] - params[DP]) * (params[AMR] / 12)	\
+    * pow(1 + params[AMR] / 12, params[ML]) \
+    /(pow(1 + params[AMR] / 12, params[ML]) - 1);
   return z;
 }
 
 double Values::base_cost()
-	      //a=months owned, b=monthly_maintenance, c= initial_property value, d=improvements                                                                                                 
 {
   double z;
-  z = months_owned * (monthly_maintenance) + initial_property_value + improvements;
+  z = params[MO] * (params[MM]) + params[IPV] + params[IMPROVS];
   return z;
 }
 
 double Values::calculated_cost()
-	      //a=initial property value, b=months owned, c=property tax rate, d=target growth rate                                                                                              
-	      //calculated cost is the amount of property tax paid per month taking into account the property growth rate                                                                        
+/*
+  calculated cost is the amount of property tax paid per month taking into 
+  account the property growth rate                                              */                          
 {
   double z = 0;
-  double calc[months_owned];
-  int x = months_owned;
+  double calc[(int)params[MO]];
+  int x = (int)params[MO];
   while (!(x<=0))
     {
-      calc[x-1] = property_tax_rate/12 * (initial_property_value * pow((1 + target_growth_rate/12),x));
+      calc[x-1] = params[PTR]/12 * (params[IPV] * pow((1 + params[TGR]/12),x));
       x=x-1;
     }
-  for (int j=0;j<months_owned;j++)
+  for (int j=0;j<params[MO];j++)
     {
       z += calc[j];
 }
@@ -108,25 +108,24 @@ return z;
 }
 
 double Values::selling_price()
-/*a=initial price,b=months owned,c=target growth rate */                                                                                                                             
 {
   double z;
-  z = initial_property_value * pow((1 + target_growth_rate), months_owned/12);
-  cout <<"This is z and months owned over 12 " << z <<" " <<months_owned/12<<endl;
-  cout <<"This is months_owned " << months_owned <<endl;
+  z = params[IPV] * pow((1 + params[TGR]), params[MO]/12);
   return z;
 }
-
+										
+										
 double Values::total_cost()
 {
-  return (bc + cc);
+  return (base_cost() + calculated_cost());
 }
 
 double Values::net_profit()
 {
-  return (tr - tc);
+  return (total_revenue() - total_cost());
 }
-
+										
+/*
 void Values::write_out()
 {
   //Writing all the output values to a file                                                                                                     
@@ -138,5 +137,5 @@ void Values::write_out()
     }
   myfile.close();
 }
-
+*/
 #endif

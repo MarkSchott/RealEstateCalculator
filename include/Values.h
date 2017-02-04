@@ -39,29 +39,11 @@ class Values {
       { ML, 0 }
     } ;
 
-  /*
-  vector<string> valid_keys = {
-  } ;
-  */
-  /*
-  double initial_property_value;
-  double down_payment;
-  double monthly_maintenance;
-  double farming_revenue;
-  double rental_revenue;
-  double improvements;
-  int months_owned;
-  double property_tax_rate;
-  double annual_mortgage_rate;
-  double target_growth_rate;
-  int mortgage_length;
-  */
-  
  public:
 
   Values(string) ;
 
-  void write_out();
+  // void write_out();
   void print_values();
   double principal();
   double principal_remaining();

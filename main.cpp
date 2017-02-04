@@ -1,35 +1,41 @@
 #include "include/Values.h"
 using namespace std;
 
-double input_values[11];
-
 int main(int argv, char ** argc)
-{
-  char * input_file ;
-  if (argv < 2) input_file = 
-  Values *val_1=nullptr;
   
-  val_1->assign(input_values);
-  val_1=new Values(input_values[0],input_values[1],input_values[2],input_values[3],input_values[4],input_values[5],input_values[6],input_values[7],input_values[8],input_values[9],input_values[10]);
+{  
+  string input_file ;
+  
+  /* 
+     OPTIONAL FUTURE SUPPORT:
+     Need to read in input file by a specific argument flag or make sure it ends in the right suffix
+     if I really want to read it in from the command line with key value pairs
+  */
+  if (argv > 2) {
+    cerr << "Improper usage!!! Only 2 arguments at most are allowed\n" ;
+    cerr << "./main.x (optional file_name)\n" ;
+    return -1 ;
+  }
+  
+  else if (argv < 2) {
+    cout << "Using default input file name \"input.txt\"\n" ;
+    input_file = "input.txt" ;
+  }
 
-  val_1->print_values();
-  calculated_values[0]=val_1->principal();
-  calculated_values[1]=val_1->amortization();
-  val_1->p=calculated_values[0];
-  val_1->amtz=calculated_values[1];
-  calculated_values[2]=val_1->principal_remaining();
-  calculated_values[3]=val_1->total_revenue();	
-  val_1->tr=calculated_values[3];
-  calculated_values[4]=val_1->base_cost();
-  val_1->bc=calculated_values[4];
-  calculated_values[5]=val_1->calculated_cost();
-  val_1->cc=calculated_values[5];
-  calculated_values[6]=val_1->total_cost();						  
-  val_1->tc=calculated_values[6];
-  calculated_values[7]=val_1->net_profit();
-  calculated_values[8]=val_1->selling_price();
+  else {
+    input_file = argc[1] ;
+  }
+  
+  Values *val_1=nullptr;
 
-  val_1->write_out();
-
+  val_1 = new Values(input_file) ;
+  val_1 -> print_values();
+  cout << "principal: " << val_1 -> principal() << endl ;
+  cout << "principal remaining: " << val_1 -> principal_remaining() << endl ;
+  cout << "amortization: " << val_1 -> amortization() << endl ;
+  cout << "selling price: " << val_1 -> selling_price() << endl ;
+  cout << "total cost: " << val_1 -> total_cost() << endl ;
+  cout << "net_profit: " << val_1 -> net_profit() << endl ;  
+  //  val_1->write_out();
   return 0;
 }
